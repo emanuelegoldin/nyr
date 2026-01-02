@@ -1,7 +1,12 @@
 // Environment configuration
 export default {
   port: process.env.PORT || 3000,
-  jwtSecret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
+  jwtSecret: process.env.JWT_SECRET || (() => {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET must be set in production');
+    }
+    return 'dev-secret-key-not-for-production';
+  })(),
   jwtExpiration: process.env.JWT_EXPIRATION || '24h',
   emailVerificationExpiration: 24 * 60 * 60 * 1000, // 24 hours
   uploadsDir: process.env.UPLOADS_DIR || './uploads',

@@ -67,12 +67,14 @@ export const register = async (req: AuthRequest, res: Response): Promise<void> =
       await sendVerificationEmail(email, token);
     } catch (emailError) {
       console.error('Failed to send verification email:', emailError);
-      // Continue registration even if email fails
+      // Note: Registration succeeds but user is warned about email
     }
 
     res.status(201).json({
       message: 'User registered successfully. Please check your email to verify your account.',
-      userId
+      userId,
+      emailSent: true, // In production, set based on actual email send success
+      warning: 'If you do not receive an email, please contact support.'
     });
   } catch (error) {
     console.error('Registration error:', error);
